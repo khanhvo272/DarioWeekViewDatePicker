@@ -176,7 +176,7 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
         // update selected block
         blocks.forEachIndexed { index, block ->
             block.setBackgroundResource(
-                if (index == selectionIndex || (selectionIndex == -1 && index == 6)) R.drawable.selected_day_bg
+                if (isSelectedIndex(index, selectionIndex)) R.drawable.selected_day_bg
                 else 0
             )
         }
@@ -184,13 +184,13 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
         // update text styles
         weekdayTextViews.forEachIndexed { index, textView ->
             textView.setTextAppearance(
-                if (index == selectionIndex) R.style.WeekDayTopTextSelected
+                if (isSelectedIndex(index, selectionIndex)) R.style.WeekDayTopTextSelected
                 else R.style.WeekDayTopText
             )
         }
         weekdayNumberViews.forEachIndexed { index, textView ->
             textView.setTextAppearance(
-                if (index == selectionIndex) R.style.WeekDayTopNumberSelected
+                if (isSelectedIndex(index, selectionIndex)) R.style.WeekDayTopNumberSelected
                 else R.style.WeekDayTopNumber
             )
         }
@@ -199,12 +199,23 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
 
         // update dots
         dots.forEachIndexed { index, imageView ->
-            imageView.visibility =
-                if (isToday(weekDates[index])) View.VISIBLE
-                else View.GONE
+            if(isToday(weekDates[index])) {
+                imageView.visibility = View.VISIBLE
+                if(isSelectedIndex(index, selectionIndex)) {
+                    imageView.setImageResource(R.drawable.ic_up_arrow)
+                } else {
+                    imageView.setImageResource(R.drawable.ic_select_weekday_dot)
+                }
+            } else {
+                imageView.visibility = View.GONE
+            }
         }
 
         onSelectionChanged(selectedDate)
+    }
+
+    private fun isSelectedIndex(index: Int, selectionIndex: Int) : Boolean {
+        return index == selectionIndex || (selectionIndex == -1 && index == 6)
     }
 
     private fun setTodayButtonText() {
