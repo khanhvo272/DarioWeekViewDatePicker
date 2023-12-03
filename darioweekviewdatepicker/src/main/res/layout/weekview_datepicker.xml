@@ -6,46 +6,80 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="4dp"
     android:paddingBottom="8dp">
-    <TextView
-        android:id="@+id/selectedDayText"
-        style="@style/TitleSelectedDate"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/lnToday"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Today, May 6, 2022"
-        android:textFontWeight="600"
-        android:layout_marginStart="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/arrowLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:src="@drawable/ic_weekday_chevron_left"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_marginEnd="22dp"
-        app:layout_constraintEnd_toStartOf="@+id/arrowRight"
-        app:layout_constraintTop_toTopOf="@+id/selectedDayText"
-        app:layout_constraintBottom_toBottomOf="@+id/selectedDayText"/>
-    <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/arrowRight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:src="@drawable/ic_weekday_chevron_right"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/selectedDayText"
-        app:layout_constraintBottom_toBottomOf="@+id/selectedDayText"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/arrowLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:src="@drawable/ic_weekday_chevron_left"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_marginEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/selectedDayText"
+                style="@style/TitleSelectedDate"
+                android:paddingTop="4dp"
+                android:paddingBottom="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Today, May 6, 2022"/>
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/arrowRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_weekday_chevron_right"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/selectedDayText"
+                app:layout_constraintBottom_toBottomOf="@+id/selectedDayText"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lnTodayLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/textViewToday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/gilroy_medium"
+                android:textColor="#FF006FFD"
+                android:textSize="16sp"
+                android:paddingTop="7dp"
+                tools:text="Today" >
+            </TextView>
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_return">
+
+            </ImageView>
+        </LinearLayout>
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="arrowLeft,arrowRight,selectedDayText"/>
+        app:constraint_referenced_ids="lnToday"/>
 
     <HorizontalScrollView
         android:id="@+id/scrollDays"
@@ -73,7 +107,7 @@
                     style="@style/WeekDayTopText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="Sun"
+                    tools:text="T.2"
                     android:layout_marginTop="@dimen/weekday_text_margin_top"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -113,7 +147,7 @@
                     style="@style/WeekDayTopTextSelected"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="Mon"
+                    tools:text="T.3"
                     android:layout_marginTop="@dimen/weekday_text_margin_top"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -153,7 +187,7 @@
                     style="@style/WeekDayTopText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="Tue"
+                    tools:text="T.4"
                     android:layout_marginTop="@dimen/weekday_text_margin_top"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -193,7 +227,7 @@
                     style="@style/WeekDayTopText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="Wed"
+                    tools:text="T.5"
                     android:layout_marginTop="@dimen/weekday_text_margin_top"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -233,7 +267,7 @@
                     style="@style/WeekDayTopText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="Thu"
+                    tools:text="T.6"
                     android:layout_marginTop="@dimen/weekday_text_margin_top"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -273,7 +307,7 @@
                     style="@style/WeekDayTopText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="Fri"
+                    tools:text="T.7"
                     android:layout_marginTop="@dimen/weekday_text_margin_top"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -313,7 +347,7 @@
                     style="@style/WeekDayTopText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="Sat"
+                    tools:text="CN"
                     android:layout_marginTop="@dimen/weekday_text_margin_top"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -342,17 +376,5 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </HorizontalScrollView>
 
-    <TextView
-        android:id="@+id/textViewToday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:fontFamily="@font/gilroy_medium"
-        android:padding="7dp"
-        android:textColor="#0C6478"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/arrowLeft"
-        app:layout_constraintEnd_toStartOf="@+id/arrowLeft"
-        app:layout_constraintTop_toTopOf="@+id/arrowLeft"
-        tools:text="Today" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

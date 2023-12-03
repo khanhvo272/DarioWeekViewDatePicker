@@ -6,6 +6,7 @@ import android.text.style.UnderlineSpan
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -36,11 +37,13 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
         private fun getFirstDayOfWeekFrom(date: Date): Date {
             val cal = Calendar.getInstance()
             cal.timeInMillis = date.time
+
             var dow = cal.get(Calendar.DAY_OF_WEEK)
             while (dow > 1) {
                 cal.add(Calendar.DATE, -1)
                 dow = cal.get(Calendar.DAY_OF_WEEK)
             }
+            cal.add(Calendar.DATE, 1)
             return Date(cal.timeInMillis)
         }
     }
@@ -55,20 +58,27 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
     private val leftArrow: AppCompatImageButton
     private val rightArrow: AppCompatImageButton
     private val todayText: TextView
+    private val lnTodayLayout: LinearLayout
 
-    private val shortWeekdays = DateFormatSymbols(Locale.getDefault()).shortWeekdays
+    var shortWeekdays = DateFormatSymbols(Locale.getDefault()).shortWeekdays
     var selectedDate = Date(System.currentTimeMillis())
         private set
     var onSelectionChanged: (Date) -> Unit = {}
     var todayDateString = context.getString(R.string.today)
 
     init {
+        val locale = Locale("vi", "VN")
+        Locale.setDefault(locale)
+
+        selectedDate = Date(getToday())
+        shortWeekdays =  CustomDateFormatSymbols(locale).shortWeekdays
         inflate(context, R.layout.weekview_datepicker, this)
 
         // refs to views
         leftArrow = findViewById(R.id.arrowLeft)
         rightArrow = findViewById(R.id.arrowRight)
         selectedDayText = findViewById(R.id.selectedDayText)
+        lnTodayLayout = findViewById(R.id.lnTodayLayout)
         todayText = findViewById(R.id.textViewToday)
         weekdayTextViews.addAll(listOf(
             findViewById(R.id.weekdayText1),
@@ -136,18 +146,24 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
         setTodayButtonText()
     }
 
-    fun setSelection(date: Date) {
+    private fun getToday() : Long {
+        var calendar = Calendar.getInstance()
+        return calendar.timeInMillis;
+    }
+
+    var firstInit = false
+    private fun setSelection(date: Date) {
         selectedDate = date
 
         // update long text for selected day
         val dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
 
         if (isToday(date)) {
-            todayText.visibility = View.GONE
-            selectedDayText.text = "$todayDateString, ${dateFormat.format(selectedDate)}"
+            lnTodayLayout.visibility = View.GONE
+            selectedDayText.text = dateFormat.format(selectedDate)
         }
         else {
-            todayText.visibility = View.VISIBLE
+            lnTodayLayout.visibility = View.VISIBLE
             selectedDayText.text = dateFormat.format(selectedDate)
         }
 
@@ -155,12 +171,12 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
         val cal = Calendar.getInstance()
         cal.timeInMillis = date.time
         val dow = cal.get(Calendar.DAY_OF_WEEK)
-        val selectionIndex = dow - 1
+        val selectionIndex = dow - 2
 
         // update selected block
         blocks.forEachIndexed { index, block ->
             block.setBackgroundResource(
-                if (index == selectionIndex) R.drawable.selected_day_bg
+                if (index == selectionIndex || (selectionIndex == -1 && index == 6)) R.drawable.selected_day_bg
                 else 0
             )
         }
@@ -199,23 +215,33 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
 
     private fun updateWeekdayNumbers() {
         // populate the selected day week's dates
-        weekDates.clear()
-
-        val date = getFirstDayOfWeekFrom(selectedDate)
-        weekDates.add(date)
-        val cal = Calendar.getInstance()
-        cal.timeInMillis = date.time
-        var i = 1
-        while (i < 7) {
-            cal.add(Calendar.DATE, 1)
-            weekDates.add(cal.time)
-            i++
+        var ccc = Calendar.getInstance()
+        ccc.timeInMillis = selectedDate.time
+        var weekDateAsDayOfMonth = weekDates.map {
+            var cccc = Calendar.getInstance()
+            cccc.timeInMillis = it.time
+            cccc.get(Calendar.DAY_OF_MONTH)
         }
 
-        // update the views
-        weekdayNumberViews.forEachIndexed { index, textView ->
-            cal.timeInMillis = weekDates[index].time
-            textView.text = "${cal.get(Calendar.DAY_OF_MONTH)}"
+        if(!weekDateAsDayOfMonth.contains(ccc.get(Calendar.DAY_OF_MONTH))) {
+            weekDates.clear()
+            val date = getFirstDayOfWeekFrom(selectedDate)
+            val cal = Calendar.getInstance()
+
+            cal.timeInMillis = date.time
+
+            weekDates.add(Date(cal.timeInMillis))
+            var i = 1
+            while (i < 7) {
+                cal.add(Calendar.DATE, 1)
+                weekDates.add(cal.time)
+                i++
+            }
+            // update the views
+            weekdayNumberViews.forEachIndexed { index, textView ->
+                cal.timeInMillis = weekDates[index].time
+                textView.text = "${cal.get(Calendar.DAY_OF_MONTH)}"
+            }
         }
     }
 
@@ -226,5 +252,5 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
         setSelection(cal.time)
     }
 
-    private fun setToday() = setSelection(Calendar.getInstance().time)
+    private fun setToday() = setSelection(Date(getToday()))
 }

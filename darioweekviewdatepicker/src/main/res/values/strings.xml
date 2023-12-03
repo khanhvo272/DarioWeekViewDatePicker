@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="today_date">Today, %1$s</string>
-    <string name="today">Today</string>
+    <string name="today">Quay về hôm nay</string>
 </resources>
