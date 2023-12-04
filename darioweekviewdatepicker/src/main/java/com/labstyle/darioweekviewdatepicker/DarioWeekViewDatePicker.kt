@@ -19,7 +19,7 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyle: Int = 0,
     defStyleRes: Int = 0
-): ConstraintLayout(context, attrs, defStyle, defStyleRes) {
+) : ConstraintLayout(context, attrs, defStyle, defStyleRes) {
 
     companion object {
         private fun isSameDay(date1: Date, date2: Date): Boolean {
@@ -38,6 +38,11 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
             val cal = Calendar.getInstance()
             cal.timeInMillis = date.time
 
+            // -1 date when day of week is sunday
+            val isAddMoreDate = cal.get(Calendar.DAY_OF_WEEK) == 1
+            if (isAddMoreDate) {
+                cal.add(Calendar.DATE, -1)
+            }
             var dow = cal.get(Calendar.DAY_OF_WEEK)
             while (dow > 1) {
                 cal.add(Calendar.DATE, -1)
@@ -71,7 +76,7 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
         Locale.setDefault(locale)
 
         selectedDate = Date(getToday())
-        shortWeekdays =  CustomDateFormatSymbols(locale).shortWeekdays
+        shortWeekdays = CustomDateFormatSymbols(locale).shortWeekdays
         inflate(context, R.layout.weekview_datepicker, this)
 
         // refs to views
@@ -80,42 +85,50 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
         selectedDayText = findViewById(R.id.selectedDayText)
         lnTodayLayout = findViewById(R.id.lnTodayLayout)
         todayText = findViewById(R.id.textViewToday)
-        weekdayTextViews.addAll(listOf(
-            findViewById(R.id.weekdayText1),
-            findViewById(R.id.weekdayText2),
-            findViewById(R.id.weekdayText3),
-            findViewById(R.id.weekdayText4),
-            findViewById(R.id.weekdayText5),
-            findViewById(R.id.weekdayText6),
-            findViewById(R.id.weekdayText7)
-        ))
-        weekdayNumberViews.addAll(listOf(
-            findViewById(R.id.weekdayNumber1),
-            findViewById(R.id.weekdayNumber2),
-            findViewById(R.id.weekdayNumber3),
-            findViewById(R.id.weekdayNumber4),
-            findViewById(R.id.weekdayNumber5),
-            findViewById(R.id.weekdayNumber6),
-            findViewById(R.id.weekdayNumber7)
-        ))
-        blocks.addAll(listOf(
-            findViewById(R.id.block1),
-            findViewById(R.id.block2),
-            findViewById(R.id.block3),
-            findViewById(R.id.block4),
-            findViewById(R.id.block5),
-            findViewById(R.id.block6),
-            findViewById(R.id.block7)
-        ))
-        dots.addAll(listOf(
-            findViewById(R.id.todayDot1),
-            findViewById(R.id.todayDot2),
-            findViewById(R.id.todayDot3),
-            findViewById(R.id.todayDot4),
-            findViewById(R.id.todayDot5),
-            findViewById(R.id.todayDot6),
-            findViewById(R.id.todayDot7)
-        ))
+        weekdayTextViews.addAll(
+            listOf(
+                findViewById(R.id.weekdayText1),
+                findViewById(R.id.weekdayText2),
+                findViewById(R.id.weekdayText3),
+                findViewById(R.id.weekdayText4),
+                findViewById(R.id.weekdayText5),
+                findViewById(R.id.weekdayText6),
+                findViewById(R.id.weekdayText7)
+            )
+        )
+        weekdayNumberViews.addAll(
+            listOf(
+                findViewById(R.id.weekdayNumber1),
+                findViewById(R.id.weekdayNumber2),
+                findViewById(R.id.weekdayNumber3),
+                findViewById(R.id.weekdayNumber4),
+                findViewById(R.id.weekdayNumber5),
+                findViewById(R.id.weekdayNumber6),
+                findViewById(R.id.weekdayNumber7)
+            )
+        )
+        blocks.addAll(
+            listOf(
+                findViewById(R.id.block1),
+                findViewById(R.id.block2),
+                findViewById(R.id.block3),
+                findViewById(R.id.block4),
+                findViewById(R.id.block5),
+                findViewById(R.id.block6),
+                findViewById(R.id.block7)
+            )
+        )
+        dots.addAll(
+            listOf(
+                findViewById(R.id.todayDot1),
+                findViewById(R.id.todayDot2),
+                findViewById(R.id.todayDot3),
+                findViewById(R.id.todayDot4),
+                findViewById(R.id.todayDot5),
+                findViewById(R.id.todayDot6),
+                findViewById(R.id.todayDot7)
+            )
+        )
 
         // set fixed weekdays texts
         weekdayTextViews.forEachIndexed { index, textView ->
@@ -140,13 +153,13 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
         setSelection(selectedDate)
     }
 
-    fun setTodayResource(text:String){
+    fun setTodayResource(text: String) {
         todayDateString = text
         setSelection(selectedDate)
         setTodayButtonText()
     }
 
-    private fun getToday() : Long {
+    private fun getToday(): Long {
         var calendar = Calendar.getInstance()
         return calendar.timeInMillis;
     }
@@ -161,8 +174,7 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
         if (isToday(date)) {
             lnTodayLayout.visibility = View.GONE
             selectedDayText.text = dateFormat.format(selectedDate)
-        }
-        else {
+        } else {
             lnTodayLayout.visibility = View.VISIBLE
             selectedDayText.text = dateFormat.format(selectedDate)
         }
@@ -199,9 +211,9 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
 
         // update dots
         dots.forEachIndexed { index, imageView ->
-            if(isToday(weekDates[index])) {
+            if (isToday(weekDates[index])) {
                 imageView.visibility = View.VISIBLE
-                if(isSelectedIndex(index, selectionIndex)) {
+                if (isSelectedIndex(index, selectionIndex)) {
                     imageView.setImageResource(R.drawable.ic_up_arrow)
                 } else {
                     imageView.setImageResource(R.drawable.ic_select_weekday_dot)
@@ -214,7 +226,7 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
         onSelectionChanged(selectedDate)
     }
 
-    private fun isSelectedIndex(index: Int, selectionIndex: Int) : Boolean {
+    private fun isSelectedIndex(index: Int, selectionIndex: Int): Boolean {
         return index == selectionIndex || (selectionIndex == -1 && index == 6)
     }
 
@@ -234,7 +246,7 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
             cccc.get(Calendar.DAY_OF_MONTH)
         }
 
-        if(!weekDateAsDayOfMonth.contains(ccc.get(Calendar.DAY_OF_MONTH))) {
+        if (!weekDateAsDayOfMonth.contains(ccc.get(Calendar.DAY_OF_MONTH))) {
             weekDates.clear()
             val date = getFirstDayOfWeekFrom(selectedDate)
             val cal = Calendar.getInstance()
