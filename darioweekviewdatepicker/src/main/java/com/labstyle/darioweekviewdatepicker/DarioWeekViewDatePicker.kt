@@ -164,7 +164,6 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
         return calendar.timeInMillis;
     }
 
-    var firstInit = false
     private fun setSelection(date: Date) {
         selectedDate = date
 
@@ -189,7 +188,7 @@ class DarioWeekViewDatePicker @JvmOverloads constructor(
         blocks.forEachIndexed { index, block ->
             block.setBackgroundResource(
                 if (isSelectedIndex(index, selectionIndex)) R.drawable.selected_day_bg
-                else 0
+                else R.drawable.bg_white
             )
         }
 
